@@ -86,4 +86,9 @@ function tanggal_indonesia($tgl, $tampil_hari = true)
 
     return $text;
 }
+// helper random noll
+function tambah_nol_di_depan($value, $thresold = null)
+{
+    return sprintf("%0". $thresold . "s", $value);
+}
 

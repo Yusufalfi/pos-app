@@ -8,7 +8,7 @@
           <img src="{{asset('AdminLTE-2/dist/img/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Alexander Pierce</p>
+          <p>{{ Auth::user()->name}}</p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>
@@ -17,7 +17,7 @@
       <ul class="sidebar-menu" data-widget="tree">
         
         <li>
-            <a href="">
+            <a href=" {{ route('dashboard')}}">
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
           </li>
@@ -25,12 +25,12 @@
         <li class="header">MASTER</li>
 
         <li>
-            <a href="">
+            <a href=" {{ route('kategori.index')}}">
                 <i class="fa fa-cube"></i> <span>kategori</span>
             </a>
         </li>
         <li>
-            <a href="">
+            <a href="{{ route('produk.index')}}">
                 <i class="fa fa-cubes"></i> <span>Produk</span>
             </a>
         </li>
