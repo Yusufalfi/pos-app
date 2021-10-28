@@ -19,27 +19,47 @@
       <div class="box">
         <div class="box-header with-border">
           {{-- <h3 class="box-title">Monthly Recap Report</h3> --}}
-          <button onclick="addForm(' {{ route('produk.store') }}')" class="btn btn-success xs btn-flat">
-              <i class="fa fa-plus-circle"> Tambah data</i>
-          </button>
+          <div class="btn-group">
+
+              <button onclick="addForm(' {{ route('produk.store') }}')" class="btn btn-success xs btn-flat">
+                  <i class="fa fa-plus-circle"> Tambah data</i>
+              </button>
+
+                {{--button delete select --}}
+              <button onclick="deleteSelected(' {{route('produk.delete_selected')}}')" class="btn btn-danger xs btn-flat" style="margin-left: 5px">
+                  <i class="fa fa-trash"> Hapus </i>
+              </button>
+
+                {{--cetak barkot --}}
+              <button onclick="cetakBarcode(' {{route('produk.cetak_barcode')}}')" class="btn btn-info xs btn-flat" style="margin-left: 5px">
+                  <i class="fa fa-barcode"> Cetak Barcode </i>
+              </button>
+
+          </div>
         </div>
     
         <div class="box-body table-responsive">
-            <table class="table table-stiped table-bordered">
-                <thead>
-                    <th width="5%">No</th>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Kategori</th>
-                    <th>Merk</th>
-                    <th>Harga Beli</th>
-                    <th>Harga Jual</th>
-                    <th>Diskon</th>
-                    <th>Stok</th>
-                    <th width="15%"><i class="fa fa-cog"></i></th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <form action="" class="form-produk" method="POST">
+                @csrf
+                <table class="table table-stiped table-bordered">
+                    <thead>
+                        <th>
+                            <input type="checkbox" name="select_all" id="select_all">
+                        </th>
+                        <th width="5%">No</th>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Kategori</th>
+                        <th>Merk</th>
+                        <th>Harga Beli</th>
+                        <th>Harga Jual</th>
+                        <th>Diskon</th>
+                        <th>Stok</th>
+                        <th width="15%"><i class="fa fa-cog"></i></th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+           </form>
         </div>
       </div>
     </div>
@@ -62,6 +82,7 @@
 
                 },
                 columns : [
+                    {data: 'select_all'},
                     {data: 'DT_RowIndex', searchable: false, sortable: false},
                     {data: 'kode_produk'},
                     {data: 'nama_produk'},
@@ -93,6 +114,16 @@
                     });
                 } 
             })
+
+            // multiple select
+            $('[name=select_all]').on('click', function() {
+                    // cari semua yg typenya checkbox 
+                $(':checkbox').prop('checked', this.checked);
+            });
+
+
+
+
         });
 
         // form
@@ -171,5 +202,42 @@
             });
             }
         }
+
+        // function delete multiSelected
+        function deleteSelected(url)
+        {
+            if($('input:checked').length > 1) {
+                if(confirm('yakin ingin menghapus data yang terpilih')) {
+                    $.post(url, $('.form-produk').serialize())
+                    // jika berhasil reload table
+                    .done((response) => {
+                        table.ajax.reload();
+                    })
+                    .fails((errors) => {
+                        alert('tidak dapat menghapus data');
+                        return;
+                    });
+                }
+            } else {
+                alert('pilih data yang ingin di hapus');
+                return;
+            }
+            // console.log('ok');
+        }
+
+        // cetak barcode
+        function cetakBarcode(url)
+        {
+            if($('input:checked').length < 1) {
+                alert('pilih data yg ingin di cetak');
+            } else if($('input:checked').length < 3){
+                alert('pilih data minimal 3 yang di ingin cetak');
+                return;
+            } else {
+                $('.form-produk').attr('action', url).attr('target', '_blank').submit();
+                // return;
+            }
+        }
+
     </script>
 @endpush
