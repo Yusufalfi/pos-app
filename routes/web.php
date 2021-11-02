@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\MemberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,8 +34,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produk/data', [ProdukController::class, 'data'])->name('produk.data');
     // delete select
     Route::post('/produk/delete-selected', [ProdukController::class, 'deleteSelected'])->name('produk.delete_selected');
-    // ceatak barcode
+    // cetak barcode
     Route::post('/produk/cetak-barcode', [ProdukController::class, 'cetakBarcode'])->name('produk.cetak_barcode');
 
     Route::resource('/produk', ProdukController::class);
+
+    Route::get('/member/data', [MemberController::class, 'data'])->name('member.data');
+    Route::resource('/member', MemberController::class);
+
+    
 } );
