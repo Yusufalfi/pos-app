@@ -22,20 +22,30 @@
           <button onclick="addForm(' {{ route('member.store') }}')" class="btn btn-success xs btn-flat">
               <i class="fa fa-plus-circle"> Data Member</i>
           </button>
+          {{-- cetak member --}}
+          <button onclick="cetakMember(' {{ route('member.cetak_member') }}')" class="btn btn-info xs btn-flat">
+              <i class="fa fa-id-card"> Cetak Member</i>
+          </button>
         </div>
     
         <div class="box-body table-responsive">
-            <table class="table table-stiped table-bordered">
-                <thead>
-                    <th width="5%">No</th>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Telepon</th>
-                    <th>Alamat</th>
-                    <th width="15%"><i class="fa fa-cog"></i></th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <form action="" method="post" class="form-member">
+                @csrf
+                <table class="table table-stiped table-bordered">
+                    <thead>
+                        <th width="5%">
+                            <input type="checkbox" name="select_all" id="select_all">
+                        </th>
+                        <th width="5%">No</th>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Telepon</th>
+                        <th>Alamat</th>
+                        <th width="15%"><i class="fa fa-cog"></i></th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </form>
         </div>
       </div>
     </div>
@@ -58,6 +68,7 @@
 
                 },
                 columns : [
+                    {data: 'select_all', searchable: false, sortable: false},
                     {data: 'DT_RowIndex', searchable: false, sortable: false},
                     {data: 'kode_member'},
                     {data: 'nama'},
@@ -84,8 +95,16 @@
                         return;
                     });
                 } 
-            })
+            });
+
+               // multiple select
+               $('[name=select_all]').on('click', function() {
+                    // cari semua yg typenya checkbox 
+                $(':checkbox').prop('checked', this.checked);
+            });
         });
+
+            
 
         // form
         function addForm(url)
@@ -157,6 +176,17 @@
                 alert('data gagal dihpus');
                 return;
             });
+            }
+        }
+
+          // cetak member
+          function cetakMember(url)
+        {
+            if($('input:checked').length < 1) {
+                alert('pilih data yg ingin di cetak');
+            } else {
+                $('.form-member').attr('action', url).attr('target', '_blank').submit();
+                // return;
             }
         }
     </script>

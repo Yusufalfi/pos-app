@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use PDF;
 
 class MemberController extends Controller
 {
@@ -24,6 +25,12 @@ class MemberController extends Controller
         return datatables()
         ->of($member)
         ->addIndexColumn()
+        // multi select 
+        ->addColumn('select_all', function($member) {
+            return '
+                <input type="checkbox" name="id_member[]" value="' . $member->id_member .'">
+            ';
+        })
         ->addColumn('kode_member', function($member) {
             return '<span class="label label-success">' . $member->kode_member .  '</span> ';
         })
@@ -35,7 +42,7 @@ class MemberController extends Controller
             </div>
             ';
         })
-        ->rawColumns(['aksi', 'kode_member'])
+        ->rawColumns(['aksi', 'select_all','kode_member'])
         ->make(true);
             // ->addColumn('action', 'users.action');
     }
@@ -138,4 +145,24 @@ class MemberController extends Controller
 
         return response()->json('null', 204);
     }
+
+      // cetak member
+      public function cetakMember(Request $request)
+      {
+          $datamember = collect(array());
+          foreach($request->id_member as $id)
+          {
+              $member = Member::find($id);
+  
+              $datamember[] = $member;
+            //   dd($datamember);
+           }
+        // return $datamember->chunk(2);
+        $datamember = $datamember->chunk(2);
+          
+          $no = 1;
+          $pdf = PDF::loadView('member.cetak', compact('datamember', 'no'));
+          $pdf->setPaper(array(0, 0, 566.93, 850.39), 'potrait');
+          return $pdf->stream('member.pdf');
+      }
 }
